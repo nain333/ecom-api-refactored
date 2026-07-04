@@ -18,13 +18,33 @@ export default class UserModel{
         users.push(newUser);
         return newUser;
     }
-    static signIn(email,password){
-        const user = users.find(u=>u.password==password);
-        return user;
-    }
+    static signUp(name, email, password, type) {
+    const newUser = new UserModel(
+        name,
+        email,
+        password,
+        type
+    );
+
+    newUser.id = users.length + 1;
+    users.push(newUser);
+
+    return newUser;
 }
 
-const users = [{
+static signIn(email, password) {
+    const user = users.find(
+        (u) => u.email === email && u.password === password
+    );
+
+    return user;
+}
+static getAll() {
+    return users;
+}
+}
+
+let users = [{
     "id":1,
     "name":"Admin User",
     "email":"admin@ecom.com",

@@ -12,7 +12,7 @@
 
     }
     static signIn(req,res){
-        UserModel.signIn(req.body.email,
+        const result = UserModel.signIn(req.body.email,
             req.body.password
         );
         if(!result){

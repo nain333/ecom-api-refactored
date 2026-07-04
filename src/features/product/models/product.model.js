@@ -8,6 +8,10 @@ export default class ProductModel {
     this.price = price;
     this.sizes=sizes;
   }
+  static get(id){
+    const product = products.find(i=>i.id==id);
+    return product;
+  }
   static getAll(){
     return products;
   }
@@ -16,6 +20,14 @@ export default class ProductModel {
     products.push(product)
     return  product;
   }
+ static filter(minPrice, maxPrice, category) {
+    return products.filter(product =>
+        !minPrice||product.price >= minPrice &&
+        !maxPrice||product.price <= maxPrice &&
+        !category||product.category === category
+    );
+}
+  
 }
  const products = [
   new ProductModel(

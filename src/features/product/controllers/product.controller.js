@@ -17,21 +17,21 @@ addProduct(req,res){
     res.status(201).send((createdRecord))
 
 } 
-rateProduct(req,res){
-    const userID = Number(req.query.userID);
-    const productID = Number(req.query.productID);
-    const rating = Number(req.query.rating)
-    ;
-    const error = ProductModel.rateProduct(
-        userID,
-        productID,
-        rating
-    )
-    if(error){
-        return res.status(400).send(error);
-    }else{
-        return res.status(200).send("Rating has been added")
-    }
+rateProduct(req, res) {
+  const userID = req.userID;
+  const { productID, rating } = req.body;
+
+  const error = ProductModel.rateProduct(
+    userID,
+    productID,
+    rating
+  );
+
+  if (error) {
+    return res.status(400).send(error);
+  }
+
+  return res.status(200).send("Rating has been added");
 }
 getOneProduct(req,res){
     const id  = req.params.id;

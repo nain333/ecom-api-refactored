@@ -13,6 +13,7 @@ const jwtAuth=(req,res,next)=>{
         token,
         process.env.JWT_SECRET
     );
+    req.userID=payload.userID;
     console.log(payload)
         
     }

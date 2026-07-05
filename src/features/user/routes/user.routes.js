@@ -6,7 +6,7 @@ import {
     loginValidator,
 } from "../validators/user.validator.js";
 
-import { validateRequest } from "../../../middlewares/valiation.middleware.js"
+import { validateRequest } from "../../../middlewares/validation.middleware.js"
 
 const userRouter = express.Router();
 

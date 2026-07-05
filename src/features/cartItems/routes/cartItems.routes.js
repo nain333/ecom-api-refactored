@@ -8,11 +8,12 @@ const cartRouter = express.Router();
 const cartController = new CartItemsController();
 
 cartRouter.post(
-  "/",
+  "/",jwtAuth,
   validateCartItem,
   validateRequest,
   cartController.add
 );
 cartRouter.get("/",jwtAuth,cartController.get)
+cartRouter.delete("/:id",jwtAuth,cartController.delete)
 
 export default cartRouter;

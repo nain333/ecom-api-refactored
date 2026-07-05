@@ -8,10 +8,10 @@ const basicAuth=(req,res,next)=>{
     }
     // 2. Extract credentials
     const base64Credentials=authHeader.replace("Basic ","")
-    console.log(base64Credentials)
+   
     // 3. decode credentials
     const decodedCreds  = Buffer.from(base64Credentials,"base64").toString("utf-8")
-    console.log(decodedCreds) // [username:password]
+   
     const creds = decodedCreds.split(":");
     const user = UserModel.signIn(creds[0], creds[1]);
     if(user){

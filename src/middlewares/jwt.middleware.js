@@ -14,7 +14,7 @@ const jwtAuth=(req,res,next)=>{
         process.env.JWT_SECRET
     );
     req.userID=payload.userID;
-    console.log(payload)
+    
         
     }
     // 4. return error

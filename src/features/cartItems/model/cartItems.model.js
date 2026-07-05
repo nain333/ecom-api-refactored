@@ -31,6 +31,7 @@ export default class CartItemModel {
   }
 
   // Check if the product already exists in this user's cart
+  
   const existingCartItem = cartItems.find(
     (item) =>
       item.productID === productID &&
@@ -40,7 +41,11 @@ export default class CartItemModel {
   // If it exists, increase the quantity
   if (existingCartItem) {
     existingCartItem.quantity += quantity;
-    return existingCartItem;
+    return {
+      cartItem:existingCartItem,
+      created:false
+
+    };
   }
 
   // Otherwise create a new cart item
@@ -54,12 +59,29 @@ export default class CartItemModel {
 
   cartItems.push(cartItem);
 
-  return cartItem;
+  return {
+    cartItem:cartItem,
+    created:true
+  }
 }
   static get(userID){
     return cartItems.filter(i=>i.userID===userID);
+  
   }
+  static delete (cartItemID,userID){
+    const cartItemIndex = cartItems.findIndex(
+      (i)=>i.id==cartItemID  && i.userID==userID
+    )
+    if(cartItemIndex==-1){
+      return "Item not found";
+
+    }else{
+      cartItems.splice(cartItemIndex,1)
+    }
+  
 }
+}
+
 
 let cartItems = [
   new CartItemModel(1, 2, 1, 1),

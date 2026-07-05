@@ -12,13 +12,7 @@ const userRouter = express.Router();
 
 console.log("user routes loaded");
 
-console.log({
-    signupValidator,
-    loginValidator,
-    validateRequest,
-    signUp: UserController.signUp,
-    signIn: UserController.signIn,
-});
+
 userRouter.post(
     "/signup",
     signupValidator,

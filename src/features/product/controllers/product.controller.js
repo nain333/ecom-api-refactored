@@ -49,7 +49,7 @@ getOneProduct(req,res){
         const  maxPrice = req.query.maxPrice;
         const category=req.query.category;
         const result = ProductModel.filter(minPrice,maxPrice,category);
-        console.log(result)
+        
         return res.status(200).json({
     success: true,
     data: result

@@ -1,35 +1,77 @@
+import UserModel from "../../user/models/user.model.js";
+import userModel from "../../user/models/user.model.js";
 export default class ProductModel {
   constructor(id, name, desc, imageUrl, category, price, sizes) {
-    this.id=id;
-    this.name=name;
-    this.desc=desc;
-    this.imageUrl=imageUrl;
-    this.category=category;
+    this.id = id;
+    this.name = name;
+    this.desc = desc;
+    this.imageUrl = imageUrl;
+    this.category = category;
     this.price = price;
-    this.sizes=sizes;
+    this.sizes = sizes;
   }
-  static get(id){
-    const product = products.find(i=>i.id==id);
+  static get(id) {
+    const product = products.find((i) => i.id == id);
     return product;
   }
-  static getAll(){
+  static getAll() {
     return products;
   }
-  static add (product){
-    product.id = products.length+1;
-    products.push(product)
-    return  product;
+  static add(product) {
+    product.id = products.length + 1;
+    products.push(product);
+    return product;
   }
- static filter(minPrice, maxPrice, category) {
-    return products.filter(product =>
-        !minPrice||product.price >= minPrice &&
-        !maxPrice||product.price <= maxPrice &&
-        !category||product.category === category
+  static filter(minPrice, maxPrice, category) {
+    return products.filter(
+      (product) =>
+        !minPrice ||
+        (product.price >= minPrice && !maxPrice) ||
+        (product.price <= maxPrice && !category) ||
+        product.category === category,
     );
+  }
+  static rateProduct(userID, productID, rating) {
+    // Validate user
+    const user = UserModel.getAll().find((u) => u.id === userID);
+
+    if (!user) {
+      return "User not found";
+    }
+
+    // Validate product
+    const product = products.find((p) => p.id === productID);
+
+    if (!product) {
+      return "Product not found";
+    }
+
+    // Create ratings array if it doesn't exist
+    if (!product.ratings) {
+      product.ratings = [];
+    }
+
+    // Check whether this user has already rated the product
+    const existingRatingIndex = product.ratings.findIndex(
+      (r) => r.userID === userID,
+    );
+
+    if (existingRatingIndex >= 0) {
+      // Update existing rating
+      product.ratings[existingRatingIndex] = {
+        userID: userID,
+        rating: rating,
+      };
+    } else {
+      // Add new rating
+      product.ratings.push({
+        userID: userID,
+        rating: rating,
+      });
+    }
+  }
 }
-  
-}
- const products = [
+const products = [
   new ProductModel(
     1,
     "Nike Air Max",
@@ -37,7 +79,7 @@ export default class ProductModel {
     "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
     "Footwear",
     5999,
-    ["6", "7", "8", "9", "10"]
+    ["6", "7", "8", "9", "10"],
   ),
 
   new ProductModel(
@@ -47,7 +89,7 @@ export default class ProductModel {
     "https://images.unsplash.com/photo-1541099649105-f69ad21f3246",
     "Clothing",
     2499,
-    ["30", "32", "34", "36"]
+    ["30", "32", "34", "36"],
   ),
 
   new ProductModel(
@@ -57,7 +99,7 @@ export default class ProductModel {
     "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f37",
     "Electronics",
     22999,
-    ["Standard"]
+    ["Standard"],
   ),
 
   new ProductModel(
@@ -67,7 +109,7 @@ export default class ProductModel {
     "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
     "Electronics",
     18999,
-    ["40mm", "44mm"]
+    ["40mm", "44mm"],
   ),
 
   new ProductModel(
@@ -77,7 +119,7 @@ export default class ProductModel {
     "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",
     "Clothing",
     999,
-    ["S", "M", "L", "XL"]
+    ["S", "M", "L", "XL"],
   ),
 
   new ProductModel(
@@ -87,7 +129,7 @@ export default class ProductModel {
     "https://images.unsplash.com/photo-1581605405669-fcdf81165afa",
     "Accessories",
     1499,
-    ["Standard"]
+    ["Standard"],
   ),
 
   new ProductModel(
@@ -97,7 +139,7 @@ export default class ProductModel {
     "https://images.unsplash.com/photo-1524805444758-089113d48a6d",
     "Accessories",
     3299,
-    ["Standard"]
+    ["Standard"],
   ),
 
   new ProductModel(
@@ -107,6 +149,6 @@ export default class ProductModel {
     "https://images.unsplash.com/photo-1556821840-3a63f95609a7",
     "Clothing",
     2999,
-    ["S", "M", "L", "XL"]
-  )
+    ["S", "M", "L", "XL"],
+  ),
 ];

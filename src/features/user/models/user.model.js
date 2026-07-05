@@ -53,4 +53,11 @@ let users = [{
     "type":"seller",
 
 
+},
+{
+    "id":2,
+    "name":"customer User",
+    "email":"costumer@ecom.com",
+    "password":"password1",
+    "type":"customer"
 }]

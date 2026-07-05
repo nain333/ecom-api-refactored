@@ -8,6 +8,7 @@ const productController = new ProductController();
 productRouter.get("/", productController.getAllProducts);
 
 productRouter.post("/",upload.single('imageUrl') ,productController.addProduct);
+productRouter.post("/rate",productController.rateProduct);
 productRouter.get("/filter",productController.filterProducts)
 productRouter.get("/:id", productController.getOneProduct);
 

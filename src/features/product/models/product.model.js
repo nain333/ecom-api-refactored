@@ -1,5 +1,7 @@
 import UserModel from "../../user/models/user.model.js";
-import userModel from "../../user/models/user.model.js";
+import { getNextId } from "../../../utils/id-generator.js";
+import NotFoundError from "../../../errors/not-found.error.js";
+import BadRequestError from "../../../errors/bad-request.error.js";
 export default class ProductModel {
   constructor(id, name, desc, imageUrl, category, price, sizes) {
     this.id = id;
@@ -11,39 +13,42 @@ export default class ProductModel {
     this.sizes = sizes;
   }
   static get(id) {
-    const product = products.find((i) => i.id == id);
+    const product = products.find((i) => i.id === id);
+    if (!product) {
+      throw new NotFoundError("Product not found");
+    }
     return product;
   }
   static getAll() {
     return products;
   }
   static add(product) {
-    product.id = products.length + 1;
+    product.id = getNextId(products);
     products.push(product);
     return product;
   }
   static filter(minPrice, maxPrice, category) {
-    return products.filter(
-      (product) =>
-        !minPrice ||
-        (product.price >= minPrice && !maxPrice) ||
-        (product.price <= maxPrice && !category) ||
-        product.category === category,
-    );
+    return products.filter((product) => {
+      const matchesMinPrice = !minPrice || product.price >= Number(minPrice);
+
+      const matchesMaxPrice = !maxPrice || product.price <= Number(maxPrice);
+
+      const matchesCategory = !category || product.category === category;
+
+      return matchesMinPrice && matchesMaxPrice && matchesCategory;
+    });
   }
   static rateProduct(userID, productID, rating) {
     // Validate user
-    const user = UserModel.getAll().find((u) => u.id === userID);
-
-    if (!user) {
-      return "User not found";
-    }
+    const user = UserModel.getById(userID);
+    
 
     // Validate product
-    const product = products.find((p) => p.id === productID);
+    const product = this.get(productID);
 
-    if (!product) {
-      return "Product not found";
+    
+    if (rating < 1 || rating > 5) {
+      throw new BadRequestError("Rating must be between 1 and 5.");
     }
 
     // Create ratings array if it doesn't exist
@@ -53,7 +58,7 @@ export default class ProductModel {
 
     // Check whether this user has already rated the product
     const existingRatingIndex = product.ratings.findIndex(
-      (r) => r.userID === userID,
+      (ratingEntery) => ratingEntery.userID === userID,
     );
 
     if (existingRatingIndex >= 0) {

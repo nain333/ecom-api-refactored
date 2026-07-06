@@ -1,6 +1,8 @@
 import ProductModel from "../../product/models/product.model.js";
 import UserModel from "../../user/models/user.model.js";
-
+import { getNextId } from "../../../utils/id-generator.js";
+import NotFoundError from "../../../errors/not-found.error.js";
+import BadRequestError from "../../../errors/bad-request.error.js";
 export default class CartItemModel {
   constructor(productID, userID, quantity, id) {
     this.productID = productID;
@@ -10,25 +12,21 @@ export default class CartItemModel {
   }
 
   static add(productID, userID, quantity) {
-  // Validate product
-  const product = ProductModel.get(productID);
+    // Validate quantity
+    const parsedQuantity = Number(quantity);
 
-  if (!product) {
-    return {
-      error: "Product not found",
-    };
-  }
+if (!Number.isInteger(parsedQuantity) || parsedQuantity <= 0) {
+    throw new BadRequestError(
+        "Quantity must be a positive integer."
+    );
+}
+  // Validate product
+   ProductModel.get(productID);
+
+ 
 
   // Validate user
-  const user = UserModel.getAll().find(
-    (user) => user.id === userID
-  );
-
-  if (!user) {
-    return {
-      error: "User not found",
-    };
-  }
+ UserModel.getById(userID);
 
   // Check if the product already exists in this user's cart
   
@@ -40,7 +38,7 @@ export default class CartItemModel {
 
   // If it exists, increase the quantity
   if (existingCartItem) {
-    existingCartItem.quantity += quantity;
+    existingCartItem.quantity += parsedQuantity;
     return {
       cartItem:existingCartItem,
       created:false
@@ -52,11 +50,11 @@ export default class CartItemModel {
   const cartItem = new CartItemModel(
     productID,
     userID,
-    quantity
+  parsedQuantity,
+    getNextId(cartItems)
   );
 
-  cartItem.id = cartItems.length + 1;
-
+  
   cartItems.push(cartItem);
 
   return {
@@ -65,19 +63,21 @@ export default class CartItemModel {
   }
 }
   static get(userID){
-    return cartItems.filter(i=>i.userID===userID);
+    return cartItems.filter(
+    (cartItem) => cartItem.userID === userID
+);
   
   }
   static delete (cartItemID,userID){
     const cartItemIndex = cartItems.findIndex(
-      (i)=>i.id==cartItemID  && i.userID==userID
+      (cartItem) =>
+    cartItem.id === Number(cartItemID)  && cartItem.userID===userID
     )
-    if(cartItemIndex==-1){
-      return "Item not found";
+    if (cartItemIndex === -1) {
+    throw new NotFoundError("Cart item not found.");
+}
 
-    }else{
-      cartItems.splice(cartItemIndex,1)
-    }
+cartItems.splice(cartItemIndex, 1);
   
 }
 }

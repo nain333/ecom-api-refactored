@@ -7,6 +7,7 @@ import basicAuthorizer from "./middlewares/basic.auth.middleware.js";
 import bodyParser from "body-parser";
 import jwtAuth from "../src/middlewares/jwt.middleware.js"
 import cartRouter from "./features/cartItems/routes/cartItems.routes.js";
+import loggerMiddleware from "./middlewares/logger.middleware.js";
 
 import apiDocs from "../swagger.json" with{type:'json'}
 const app = express();
@@ -20,6 +21,7 @@ app.use(
   swagger.serve,
   swagger.setup(apiDocs)
 );
+app.use(loggerMiddleware)
 app.use('/api/products',jwtAuth,productRouter);
 app.use("/api/cartItems",cartRouter)
 app.use("/api/users",userRouter)

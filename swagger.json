@@ -1,0 +1,1008 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "E-Commerce API",
+    "version": "1.0.0",
+    "description": "REST API documentation for the E-Commerce application. The API provides user authentication, product management, product filtering and rating, and shopping cart operations."
+  },
+
+  "servers": [
+    {
+      "url": "http://localhost:5000",
+      "description": "Local development server"
+    }
+  ],
+
+  "tags": [
+    {
+      "name": "Users",
+      "description": "User registration and authentication endpoints"
+    },
+    {
+      "name": "Products",
+      "description": "Product retrieval, creation, filtering, and rating endpoints"
+    },
+    {
+      "name": "Cart Items",
+      "description": "Shopping cart management endpoints"
+    }
+  ],
+
+  "paths": {
+    "/api/users/signup": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Register a new user",
+        "description": "Creates a new user account.",
+        "operationId": "signUpUser",
+
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignupRequest"
+              },
+              "example": {
+                "name": "John Doe",
+                "email": "john@example.com",
+                "password": "password123",
+                "type": "customer"
+              }
+            }
+          }
+        },
+
+        "responses": {
+          "201": {
+            "description": "User created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          }
+        }
+      }
+    },
+
+    "/api/users/signin": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Authenticate a user",
+        "description": "Authenticates a user using email and password and returns a JWT token.",
+        "operationId": "signInUser",
+
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SigninRequest"
+              },
+              "example": {
+                "email": "admin@ecom.com",
+                "password": "password1"
+              }
+            }
+          }
+        },
+
+        "responses": {
+          "200": {
+            "description": "Authentication successful. Returns a JWT token.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                }
+              }
+            }
+          },
+
+          "400": {
+            "description": "Validation failed or incorrect credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              },
+
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Incorrect Credentials"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/api/products": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get all products",
+        "description": "Returns all available products. Authentication is required.",
+        "operationId": "getAllProducts",
+
+        "security": [
+          {
+            "RawJWTAuth": []
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Products retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Product"
+                  }
+                }
+              }
+            }
+          },
+
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Create a new product",
+        "description": "Creates a new product using multipart form data and uploads a product image. Authentication is required.",
+        "operationId": "addProduct",
+
+        "security": [
+          {
+            "RawJWTAuth": []
+          }
+        ],
+
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductRequest"
+              }
+            }
+          }
+        },
+
+        "responses": {
+          "201": {
+            "description": "Product created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+
+    "/api/products/rate": {
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Rate a product",
+        "description": "Adds a new product rating or updates the authenticated user's existing rating.",
+        "operationId": "rateProduct",
+
+        "security": [
+          {
+            "RawJWTAuth": []
+          }
+        ],
+
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RatingRequest"
+              },
+              "example": {
+                "productID": 1,
+                "rating": 5
+              }
+            }
+          }
+        },
+
+        "responses": {
+          "200": {
+            "description": "Rating added or updated successfully",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Rating has been added"
+                }
+              }
+            }
+          },
+
+          "400": {
+            "description": "Validation failed, user was not found, or product was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              },
+
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Product not found"
+                }
+              }
+            }
+          },
+
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+
+    "/api/products/filter": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Filter products",
+        "description": "Filters products using minimum price, maximum price, and category query parameters.",
+        "operationId": "filterProducts",
+
+        "security": [
+          {
+            "RawJWTAuth": []
+          }
+        ],
+
+        "parameters": [
+          {
+            "name": "minPrice",
+            "in": "query",
+            "required": false,
+            "description": "Minimum product price",
+            "schema": {
+              "type": "number",
+              "format": "float",
+              "minimum": 0
+            },
+            "example": 1000
+          },
+
+          {
+            "name": "maxPrice",
+            "in": "query",
+            "required": false,
+            "description": "Maximum product price",
+            "schema": {
+              "type": "number",
+              "format": "float",
+              "minimum": 0
+            },
+            "example": 10000
+          },
+
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "description": "Product category",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Electronics"
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Products filtered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductListResponse"
+                }
+              }
+            }
+          },
+
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+
+    "/api/products/{id}": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get a product by ID",
+        "description": "Returns a single product matching the supplied product ID.",
+        "operationId": "getProductById",
+
+        "security": [
+          {
+            "RawJWTAuth": []
+          }
+        ],
+
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Product ID",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Product retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+
+          "404": {
+            "description": "Product not found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Product not found"
+                }
+              }
+            }
+          },
+
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+
+    "/api/cartItems": {
+      "post": {
+        "tags": [
+          "Cart Items"
+        ],
+        "summary": "Add a product to the cart",
+        "description": "Adds a product to the authenticated user's cart. If the product already exists in the cart, its quantity is increased.",
+        "operationId": "addCartItem",
+
+        "security": [
+          {
+            "RawJWTAuth": []
+          }
+        ],
+
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCartItemRequest"
+              },
+              "example": {
+                "productID": 1,
+                "quantity": 2
+              }
+            }
+          }
+        },
+
+        "responses": {
+          "200": {
+            "description": "Existing cart item quantity updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartItemResponse"
+                }
+              }
+            }
+          },
+
+          "201": {
+            "description": "New cart item created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartItemResponse"
+                }
+              }
+            }
+          },
+
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+
+          "404": {
+            "$ref": "#/components/responses/CartResourceNotFound"
+          }
+        }
+      },
+
+      "get": {
+        "tags": [
+          "Cart Items"
+        ],
+        "summary": "Get the authenticated user's cart",
+        "description": "Returns all cart items belonging to the authenticated user.",
+        "operationId": "getCartItems",
+
+        "security": [
+          {
+            "RawJWTAuth": []
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Cart items retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CartItem"
+                  }
+                }
+              }
+            }
+          },
+
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+
+    "/api/cartItems/{id}": {
+      "delete": {
+        "tags": [
+          "Cart Items"
+        ],
+        "summary": "Remove a cart item",
+        "description": "Removes a cart item belonging to the authenticated user.",
+        "operationId": "deleteCartItem",
+
+        "security": [
+          {
+            "RawJWTAuth": []
+          }
+        ],
+
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Cart item ID",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Cart item removed successfully",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Cart Item is removed"
+                }
+              }
+            }
+          },
+
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+
+          "404": {
+            "description": "Cart item not found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Item not found"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "components": {
+    "securitySchemes": {
+      "RawJWTAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Enter the raw JWT token. The current authentication middleware does not expect the Bearer prefix."
+      }
+    },
+
+    "schemas": {
+      "User": {
+        "type": "object",
+
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 3
+          },
+
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "example": "John Doe"
+          },
+
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "john@example.com"
+          },
+
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "example": "password123"
+          },
+
+          "type": {
+            "type": "string",
+            "example": "customer"
+          }
+        }
+      },
+
+      "SignupRequest": {
+        "type": "object",
+
+        "required": [
+          "name",
+          "email",
+          "password"
+        ],
+
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "example": "John Doe"
+          },
+
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "john@example.com"
+          },
+
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "example": "password123"
+          },
+
+          "type": {
+            "type": "string",
+            "example": "customer"
+          }
+        }
+      },
+
+      "SigninRequest": {
+        "type": "object",
+
+        "required": [
+          "email",
+          "password"
+        ],
+
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "admin@ecom.com"
+          },
+
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "example": "password1"
+          }
+        }
+      },
+
+      "Product": {
+        "type": "object",
+
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+
+          "name": {
+            "type": "string",
+            "example": "Nike Air Max"
+          },
+
+          "desc": {
+            "type": "string",
+            "example": "Comfortable running shoes with Air cushioning."
+          },
+
+          "imageUrl": {
+            "type": "string",
+            "example": "product-image.jpg"
+          },
+
+          "category": {
+            "type": "string",
+            "example": "Footwear"
+          },
+
+          "price": {
+            "type": "number",
+            "format": "float",
+            "example": 5999
+          },
+
+          "sizes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ]
+          },
+
+          "ratings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Rating"
+            }
+          }
+        }
+      },
+
+      "CreateProductRequest": {
+        "type": "object",
+
+        "required": [
+          "name",
+          "price",
+          "sizes",
+          "imageUrl"
+        ],
+
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Running Shoes"
+          },
+
+          "price": {
+            "type": "number",
+            "format": "float",
+            "example": 2999
+          },
+
+          "sizes": {
+            "type": "string",
+            "description": "Comma-separated list of product sizes",
+            "example": "6,7,8,9"
+          },
+
+          "imageUrl": {
+            "type": "string",
+            "format": "binary",
+            "description": "Product image file"
+          }
+        }
+      },
+
+      "Rating": {
+        "type": "object",
+
+        "properties": {
+          "userID": {
+            "type": "integer",
+            "example": 1
+          },
+
+          "rating": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "example": 5
+          }
+        }
+      },
+
+      "RatingRequest": {
+        "type": "object",
+
+        "required": [
+          "productID",
+          "rating"
+        ],
+
+        "properties": {
+          "productID": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 1
+          },
+
+          "rating": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "example": 5
+          }
+        }
+      },
+
+      "CartItem": {
+        "type": "object",
+
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+
+          "productID": {
+            "type": "integer",
+            "example": 1
+          },
+
+          "userID": {
+            "type": "integer",
+            "example": 2
+          },
+
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 2
+          }
+        }
+      },
+
+      "AddCartItemRequest": {
+        "type": "object",
+
+        "required": [
+          "productID",
+          "quantity"
+        ],
+
+        "properties": {
+          "productID": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 1
+          },
+
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 2
+          }
+        }
+      },
+
+      "CartItemResponse": {
+        "type": "object",
+
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+
+          "data": {
+            "$ref": "#/components/schemas/CartItem"
+          }
+        }
+      },
+
+      "ProductListResponse": {
+        "type": "object",
+
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Product"
+            }
+          }
+        }
+      },
+
+      "ValidationError": {
+        "type": "object",
+
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+
+          "errors": {
+            "type": "array",
+
+            "items": {
+              "$ref": "#/components/schemas/ValidationErrorDetail"
+            }
+          }
+        }
+      },
+
+      "ValidationErrorDetail": {
+        "type": "object",
+
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "field"
+          },
+
+          "value": {
+            "example": ""
+          },
+
+          "msg": {
+            "type": "string",
+            "example": "Email is required"
+          },
+
+          "path": {
+            "type": "string",
+            "example": "email"
+          },
+
+          "location": {
+            "type": "string",
+            "example": "body"
+          }
+        }
+      },
+
+      "CartErrorResponse": {
+        "type": "object",
+
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+
+          "error": {
+            "type": "string",
+            "example": "Product not found"
+          }
+        }
+      }
+    },
+
+    "responses": {
+      "UnauthorizedError": {
+        "description": "JWT token is missing or invalid",
+
+        "content": {
+          "text/plain": {
+            "schema": {
+              "type": "string",
+              "example": "Unathorized"
+            }
+          }
+        }
+      },
+
+      "ValidationError": {
+        "description": "Request validation failed",
+
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          }
+        }
+      },
+
+      "CartResourceNotFound": {
+        "description": "Product or user was not found",
+
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CartErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  }
+}

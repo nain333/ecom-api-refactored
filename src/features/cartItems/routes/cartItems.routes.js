@@ -1,5 +1,5 @@
 import express from "express";
-import {CartItemsController} from "../controller/cartItems.controller.js";
+import {CartItemsController} from "../controllers/cartItems.controller.js";
 import { validateCartItem } from "../middlewares/cartItem.validation.middleware.js";
 import { validateRequest } from "../../../middlewares/validation.middleware.js";
 import jwtAuth from "../../../middlewares/jwt.middleware.js";

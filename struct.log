@@ -1,0 +1,183 @@
+.
+├── logs
+│   ├── app.log
+│   └── error.log
+├── package.json
+├── package-lock.json
+├── server.js
+├── src
+│   ├── app.js
+│   ├── config
+│   │   ├── database
+│   │   │   ├── database.provider.js
+│   │   │   ├── index.js
+│   │   │   └── mongodb.connection.js
+│   │   ├── env.config.js
+│   │   └── logger.js
+│   ├── errors
+│   │   ├── app-error.js
+│   │   ├── bad-request.error.js
+│   │   ├── conflict-error.js
+│   │   ├── forbidden-error.js
+│   │   ├── not-found.error.js
+│   │   ├── unauthorized-error.js
+│   │   └── validaton-error.js
+│   ├── features
+│   │   ├── cartItems
+│   │   │   ├── controllers
+│   │   │   │   └── cartItems.controller.js
+│   │   │   ├── middlewares
+│   │   │   │   └── cartItem.validation.middleware.js
+│   │   │   ├── model
+│   │   │   │   └── cartItems.model.js
+│   │   │   ├── repositories
+│   │   │   │   └── cartItems.repository.js
+│   │   │   └── routes
+│   │   │       └── cartItems.routes.js
+│   │   ├── order
+│   │   ├── product
+│   │   │   ├── controllers
+│   │   │   │   └── product.controller.js
+│   │   │   ├── middlewares
+│   │   │   │   └── product.validation.middleware.js
+│   │   │   ├── models
+│   │   │   │   └── product.model.js
+│   │   │   ├── repositories
+│   │   │   │   └── product.repository.js
+│   │   │   └── routes
+│   │   │       └── product.routes.js
+│   │   └── user
+│   │       ├── controllers
+│   │       │   └── user.controller.js
+│   │       ├── models
+│   │       │   └── user.model.js
+│   │       ├── repositories
+│   │       │   └── user.repository.js
+│   │       ├── routes
+│   │       │   └── user.routes.js
+│   │       ├── services
+│   │       │   └── user.service.js
+│   │       └── validators
+│   │           └── user.validator.js
+│   ├── middlewares
+│   │   ├── async-handler.middleware.js
+│   │   ├── basic.auth.middleware.js
+│   │   ├── error.middleware.js
+│   │   ├── fileUpload.middleware.js
+│   │   ├── jwt.middleware.js
+│   │   ├── logger.middleware.js
+│   │   └── validation.middleware.js
+│   └── utils
+│       └── id-generator.js
+├── struct.log
+├── swagger.json
+├── tests
+│   ├── integration
+│   │   ├── cart.test.js
+│   │   ├── product.test.js
+│   │   └── user.test.js
+│   ├── setup
+│   │   ├── setup.js
+│   │   └── teardown.js
+│   └── util
+│       ├── controllers
+│       ├── repositories
+│       └── services
+└── uploads
+    ├── 3247df4c681f0959e39402c7a15dfb42
+    ├── 7074946c3989b46ef3005168d7656c9e
+    └── ea1434ea29338381f58f57868f83309e
+
+37 directories, 52 files
+.
+├── logs
+│   ├── app.log
+│   └── error.log
+├── package.json
+├── package-lock.json
+├── server.js
+├── src
+│   ├── app.js
+│   ├── config
+│   │   ├── database
+│   │   │   ├── database.provider.js
+│   │   │   ├── index.js
+│   │   │   └── mongodb.connection.js
+│   │   ├── env.config.js
+│   │   └── logger.js
+│   ├── errors
+│   │   ├── app-error.js
+│   │   ├── bad-request.error.js
+│   │   ├── conflict-error.js
+│   │   ├── forbidden-error.js
+│   │   ├── not-found.error.js
+│   │   ├── unauthorized-error.js
+│   │   └── validaton-error.js
+│   ├── features
+│   │   ├── cartItems
+│   │   │   ├── controllers
+│   │   │   │   └── cartItems.controller.js
+│   │   │   ├── middlewares
+│   │   │   │   └── cartItem.validation.middleware.js
+│   │   │   ├── model
+│   │   │   │   └── cartItems.model.js
+│   │   │   ├── repositories
+│   │   │   │   └── cartItems.repository.js
+│   │   │   └── routes
+│   │   │       └── cartItems.routes.js
+│   │   ├── order
+│   │   ├── product
+│   │   │   ├── controllers
+│   │   │   │   └── product.controller.js
+│   │   │   ├── middlewares
+│   │   │   │   └── product.validation.middleware.js
+│   │   │   ├── models
+│   │   │   │   └── product.model.js
+│   │   │   ├── repositories
+│   │   │   │   └── product.repository.js
+│   │   │   └── routes
+│   │   │       └── product.routes.js
+│   │   └── user
+│   │       ├── controllers
+│   │       │   └── user.controller.js
+│   │       ├── models
+│   │       │   └── user.model.js
+│   │       ├── repositories
+│   │       │   └── user.repository.js
+│   │       ├── routes
+│   │       │   └── user.routes.js
+│   │       ├── services
+│   │       │   └── user.service.js
+│   │       └── validators
+│   │           └── user.validator.js
+│   ├── middlewares
+│   │   ├── async-handler.middleware.js
+│   │   ├── basic.auth.middleware.js
+│   │   ├── error.middleware.js
+│   │   ├── fileUpload.middleware.js
+│   │   ├── jwt.middleware.js
+│   │   ├── logger.middleware.js
+│   │   └── validation.middleware.js
+│   └── utils
+│       └── id-generator.js
+├── struct.log
+├── swagger.json
+├── tests
+│   ├── config
+│   │   ├── setup.js
+│   │   └── teardown.js
+│   ├── fixtures
+│   ├── integration
+│   │   ├── cart.test.js
+│   │   ├── product.test.js
+│   │   └── user.test.js
+│   └── unit
+│       ├── controllers
+│       ├── repositories
+│       └── services
+└── uploads
+    ├── 3247df4c681f0959e39402c7a15dfb42
+    ├── 7074946c3989b46ef3005168d7656c9e
+    └── ea1434ea29338381f58f57868f83309e
+
+38 directories, 52 files

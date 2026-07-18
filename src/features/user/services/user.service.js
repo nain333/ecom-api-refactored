@@ -1,36 +1,85 @@
-import User from "../models/user.model.js";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
-class UserRepository {
-    async create(userData) {
-        return await User.create(userData);
+import UserRepository from "../repositories/user.repository.js";
+
+import ConflictError from "../../../errors/conflict-error.js";
+import NotFoundError from "../../../errors/not-found.error.js";
+import UnauthorizedError from "../../../errors/unauthorized-error.js";
+
+class UserService {
+    async signUp(userData) {
+        const existingUser = await UserRepository.findByEmail(userData.email);
+
+        if (existingUser) {
+            throw new ConflictError("Email already exists.");
+        }
+
+        const hashedPassword = await bcrypt.hash(userData.password, 12);
+
+        const user = await UserRepository.create({
+            ...userData,
+            password: hashedPassword,
+        });
+
+        const userResponse = user.toObject();
+
+        delete userResponse.password;
+
+        return userResponse;
     }
 
-    async findById(id) {
-        return await User.findById(id);
-    }
+    async signIn(email, password) {
+        const user = await UserRepository.findByEmail(email);
 
-    async findByEmail(email) {
-        return await User.findOne({ email }).select("+password");
-    }
+        if (!user) {
+            throw new UnauthorizedError("Invalid email or password.");
+        }
 
-    async findAll() {
-        return await User.find();
-    }
+        const isPasswordValid = await bcrypt.compare(
+            password,
+            user.password
+        );
 
-    async updateById(id, updateData) {
-        return await User.findByIdAndUpdate(
-            id,
-            updateData,
+        if (!isPasswordValid) {
+            throw new UnauthorizedError("Invalid email or password.");
+        }
+
+        const token = jwt.sign(
             {
-                new: true,
-                runValidators: true,
+                userId: user._id,
+                email: user.email,
+                role: user.role,
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: "364d",
             }
         );
+
+        const userResponse = user.toObject();
+
+        delete userResponse.password;
+
+        return {
+            token,
+            user: userResponse,
+        };
     }
 
-    async deleteById(id) {
-        return await User.findByIdAndDelete(id);
+    async getAllUsers() {
+        return await UserRepository.findAll();
+    }
+
+    async getUserById(id) {
+        const user = await UserRepository.findById(id);
+
+        if (!user) {
+            throw new NotFoundError("User not found.");
+        }
+
+        return user;
     }
 }
 
-export default new UserRepository();
+export default new UserService();

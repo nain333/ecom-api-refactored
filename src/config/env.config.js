@@ -1,9 +1,19 @@
 import { configDotenv } from "dotenv";
 
-configDotenv();
+const envFile =
+    process.env.NODE_ENV === "test"
+        ? ".env.test"
+        : ".env";
+
+configDotenv({
+    path: envFile,
+});
 
 export const envConfig = {
+    nodeEnv: process.env.NODE_ENV,
+
     port: process.env.PORT,
+
     jwtSecret: process.env.JWT_SECRET,
 
     database: {

@@ -1,0 +1,70 @@
+
+> portfolio-ecom-api@1.0.0 test
+> vitest run
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.10 [39m[90m/home/nain07/portfolio-ecom-api[39m
+
+[90mstdout[2m | tests/integration/product.test.js
+[22m[39m◇ injected env (5) from .env.test // tip: ⌘ suppress logs { quiet: true }
+
+[90mstdout[2m | tests/integration/cart.test.js
+[22m[39m◇ injected env (5) from .env.test // tip: ◈ secrets for agents [www.dotenvx.com]
+
+[90mstdout[2m | tests/integration/user.test.js
+[22m[39m◇ injected env (5) from .env.test // tip: ⌘ override existing { override: true }
+
+[90mstdout[2m | tests/integration/cart.test.js
+[22m[39m>>> setup.js loaded
+
+[90mstdout[2m | tests/integration/user.test.js
+[22m[39m>>> setup.js loaded
+
+[90mstdout[2m | tests/integration/product.test.js
+[22m[39m>>> setup.js loaded
+
+ [2m[90m↓[39m[22m tests/integration/cart.test.js [2m([22m[2m1 test[22m[2m | [22m[90m1 todo[39m[2m)[22m
+ [2m[90m↓[39m[22m tests/integration/product.test.js [2m([22m[2m1 test[22m[2m | [22m[90m1 todo[39m[2m)[22m
+[90mstdout[2m | tests/integration/user.test.js
+[22m[39m>>> beforeAll started
+
+[90mstdout[2m | tests/integration/user.test.js
+[22m[39minfo: MongoDB connection opened. {"timestamp":"2026-07-18T21:03:33.113Z"}
+
+[90mstdout[2m | tests/integration/user.test.js
+[22m[39minfo: MongoDB connected successfully. {"timestamp":"2026-07-18T21:03:33.121Z"}
+
+[90mstdout[2m | tests/integration/user.test.js
+[22m[39m>>> database connected
+
+[90mstdout[2m | tests/integration/user.test.js[2m > [22m[2mUser API[2m > [22m[2mshould register a new user
+[22m[39minfo: Incoming Request {"body":{"email":"himanshu@test.com","name":"Himanshu","password":"Password123","role":"customer"},"ip":"::ffff:127.0.0.1","method":"POST","params":{},"query":{},"timestamp":"2026-07-18T21:03:33.170Z","url":"/api/users/signup"}
+
+[90mstdout[2m | tests/integration/user.test.js[2m > [22m[2mUser API[2m > [22m[2mshould register a new user
+[22m[39merror: bcrypt is not defined {"ip":"::ffff:127.0.0.1","method":"POST","stack":"ReferenceError: bcrypt is not defined\n    at UserService.signUp (/home/nain07/portfolio-ecom-api/src/features/user/services/user.service.js:17:28)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at signUp (/home/nain07/portfolio-ecom-api/src/features/user/controllers/user.controller.js:5:22)\n    at /home/nain07/portfolio-ecom-api/src/middlewares/async-handler.middleware.js:4:13","timestamp":"2026-07-18T21:03:33.214Z","url":"/api/users/signup"}
+
+[90mstdout[2m | tests/integration/user.test.js[2m > [22m[2mUser API[2m > [22m[2mshould register a new user
+[22m[39minfo: Response Sent {"responseTime":"52 ms","statusCode":500,"timestamp":"2026-07-18T21:03:33.221Z"}
+
+[90mstdout[2m | tests/integration/user.test.js[2m > [22m[2mUser API[2m > [22m[2mshould register a new user
+[22m[39m
+========== RESPONSE ==========
+Status: [33m500[39m
+Body: { success: [33mfalse[39m, message: [32m'bcrypt is not defined'[39m }
+==============================
+
+
+[90mstdout[2m | tests/integration/user.test.js
+[22m[39mwarn: MongoDB disconnected. {"timestamp":"2026-07-18T21:03:33.256Z"}
+
+[90mstdout[2m | tests/integration/user.test.js
+[22m[39minfo: MongoDB connection closed. {"timestamp":"2026-07-18T21:03:33.256Z"}
+
+ [31m❯[39m tests/integration/user.test.js [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 205[2mms[22m[39m
+[31m     [31m×[31m should register a new user[39m[32m 116[2mms[22m[39m
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[33m2 skipped[39m[90m (3)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[90m2 todo[39m[90m (3)[39m
+[2m   Start at [22m 02:33:31
+[2m   Duration [22m 1.94s[2m (transform 422ms, setup 1.97s, import 758ms, tests 205ms, environment 1ms)[22m
+

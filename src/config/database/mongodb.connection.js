@@ -41,6 +41,19 @@ export async function disconnectMongoDB() {
         logger.error("Error while disconnecting MongoDB.", error);
     }
 }
+export async function clearMongoDB() {
+    if (!isConnected) {
+        return;
+    }
+
+    const collections = mongoose.connection.collections;
+
+    for (const collection of Object.values(collections)) {
+        await collection.deleteMany({});
+    }
+
+    logger.info("MongoDB test database cleared.");
+}
 
 mongoose.connection.on("connected", () => {
     logger.info("MongoDB connection opened.");

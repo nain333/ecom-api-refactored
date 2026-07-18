@@ -1,54 +1,43 @@
- import UserModel from "../models/user.model.js";
- import jwt from "jsonwebtoken";
+import UserService from "../services/user.service.js";
 
- export default class UserController{
-    static signUp(req, res, next) {
-    try {
-        const { name, email, password, type } = req.body;
-
-        const user = UserModel.signUp(
-            name,
-            email,
-            password,
-            type
-        );
+export default class UserController {
+    static async signUp(req, res) {
+        const user = await UserService.signUp(req.body);
 
         return res.status(201).json({
             success: true,
             data: user,
         });
-
-    } catch (err) {
-        return next(err);
     }
-}
-    static signIn(req, res, next) {
-    try {
 
-        const user = UserModel.signIn(
+    static async signIn(req, res) {
+        const result = await UserService.signIn(
             req.body.email,
             req.body.password
         );
 
-        const token = jwt.sign(
-            {
-                userID: user.id,
-                email: user.email,
-            },
-            process.env.JWT_SECRET,
-            {
-                expiresIn: "364d",
-            }
-        );
+        return res.status(200).json({
+            success: true,
+            token: result.token,
+            user: result.user,
+        });
+    }
+
+    static async getAllUsers(req, res) {
+        const users = await UserService.getAllUsers();
 
         return res.status(200).json({
             success: true,
-            token,
+            data: users,
         });
-
-    } catch (err) {
-        return next(err);
     }
-}
- }
- 
+
+    static async getUserById(req, res) {
+        const user = await UserService.getUserById(req.params.id);
+
+        return res.status(200).json({
+            success: true,
+            data: user,
+        });
+    }
+}    

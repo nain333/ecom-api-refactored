@@ -1,30 +1,29 @@
 import express from "express";
 
 import UserController from "../controllers/user.controller.js";
+
 import {
     signupValidator,
     loginValidator,
 } from "../validators/user.validator.js";
 
-import { validateRequest } from "../../../middlewares/validation.middleware.js"
+import { validateRequest } from "../../../middlewares/validation.middleware.js";
+import asyncHandler from "../../../middlewares/async-handler.middleware.js";
 
 const userRouter = express.Router();
-
-console.log("user routes loaded");
-
 
 userRouter.post(
     "/signup",
     signupValidator,
     validateRequest,
-    UserController.signUp
+    asyncHandler(UserController.signUp)
 );
 
 userRouter.post(
     "/signin",
     loginValidator,
     validateRequest,
-    UserController.signIn
+    asyncHandler(UserController.signIn)
 );
 
 export default userRouter;

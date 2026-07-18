@@ -1,66 +1,51 @@
-import ConflictError from "../../../errors/conflict-error.js";
-import NotFoundError from "../../../errors/not-found.error.js";
-import UnauthorizedError from "../../../errors/unauthorized-error.js";
-import { getNextId } from "../../../utils/id-generator.js";
-export default class UserModel {
-  constructor(name, email, password, type, id) {
-    this.name = name;
-    this.email = email;
-    this.password = password;
-    this.type = type;
-    this.id = id;
-  }
+import mongoose from "mongoose";
 
-  static signUp(name, email, password, type) {
-    const existingUser = users.find((user) => user.email === email);
-    if (existingUser) {
-      throw new ConflictError("Email already exists.");
+const userSchema = new mongoose.Schema(
+    {
+        name: {
+            type: String,
+            required: [true, "Name is required."],
+            trim: true,
+            minlength: [2, "Name must be at least 2 characters."],
+            maxlength: [100, "Name cannot exceed 100 characters."],
+        },
+
+        email: {
+            type: String,
+            required: [true, "Email is required."],
+            unique: true,
+            lowercase: true,
+            trim: true,
+            maxlength: [255, "Email cannot exceed 255 characters."],
+            match: [
+                /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                "Please provide a valid email address.",
+            ],
+        },
+
+        password: {
+            type: String,
+            required: [true, "Password is required."],
+            minlength: [8, "Password must be at least 8 characters."],
+            select: false,
+        },
+
+        role: {
+            type: String,
+            enum: {
+                values: ["customer", "seller"],
+                message: "{VALUE} is not a valid user role.",
+            },
+            default: "customer",
+            required: true,
+        },
+    },
+    {
+        timestamps: true,
+        versionKey: false,
     }
-    let newUserId = getNextId(users);
-    const newUser = new UserModel(name, email, password, type, newUserId);
+);
 
-    users.push(newUser);
+const User = mongoose.model("User", userSchema);
 
-    return newUser;
-  }
-
-  static signIn(email, password) {
-    const user = users.find(
-      (user) => user.email === email && user.password === password,
-    );
-    if (!user) {
-      throw new UnauthorizedError("Invalid email or password");
-    }
-
-    return user;
-  }
-  static getAll() {
-    return users;
-  }
-  static getById(id){
-    const user= users.find((user)=>Number(id)===user.id);
-    if(!user){
-        throw new NotFoundError("User not found.")
-    }
-    return user;
-  }
-}
-
-
-
-let users = [
-  {
-    id: 1,
-    name: "Admin User",
-    email: "admin@ecom.com",
-    password: "password1",
-    type: "seller",
-  },
-  {
-    id: 2,
-    name: "customer User",
-    email: "costumer@ecom.com",
-    password: "password1",
-    type: "customer",
-  },
-];
+export default User;
